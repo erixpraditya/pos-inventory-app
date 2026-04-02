@@ -7,6 +7,8 @@ services:
     volumes:
       - ./src:/var/www/html
       - /var/www/html/vendor
+    environment:
+      - TMPDIR=/tmp
     depends_on:
       - db
 
