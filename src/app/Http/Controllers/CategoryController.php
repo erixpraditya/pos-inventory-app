@@ -31,7 +31,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //validasi data dari form
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug',
+            'description' => 'nullable|string'
+        ]);
+
+        //lakuin logika create
+        Category::create($validated);
+
+        //redirect
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dibuat.');
     }
 
     /**
@@ -47,7 +59,10 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        //
+        //edit
+        return view('categories.edit', [
+            'category' => $category
+        ]);
     }
 
     /**
@@ -55,7 +70,18 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        //Validasi
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
+            'description' => 'nullable|string'
+        ]);
+
+        //Update
+        $category->update($validated);
+
+        //Redirect
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui .');
     }
 
     /**
@@ -63,6 +89,10 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        // lakukan delete
+        $category->delete();
+
+        // redirect
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
